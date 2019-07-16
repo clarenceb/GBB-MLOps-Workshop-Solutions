@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dogbreeds-ml.fullname" . }}
+  labels:
+    app: {{ template "dogbreeds-ml.name" . }}
+    chart: {{ template "dogbreeds-ml.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "dogbreeds-ml.name" . }}
+    release: {{ .Release.Name }}
