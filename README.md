@@ -84,13 +84,21 @@ Result:
 
 ### Deploying directly to AKS
 
+Get the Ingress external IP:
+
+```sh
+kubectl get service -l app=nginx-ingress --namespace ingress-nginx
+```
+
+Create a namespace and apply the Kubernetes manifests:
+
 ```sh
 kubectl create ns dogbreeds-test
 kubectl apply -f dogbreeds.yaml -n dogbreeds-test
 
 curl https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/12213613/Chihuahua-onWhite-13.jpg -o /tmp/dog.jpg
 
-(echo -n '{"data": "'; base64 /tmp/dog.jpg; echo '"}') | curl -sX POST -H "Content-Type: application/json" -d @-  http://<ingress_ip>/dogbreeds/score
+(echo -n '{"data": "'; base64 /tmp/dog.jpg; echo '"}') | curl -sX POST -H "Content-Type: application/json" -d @-  http://<ingress_external_ip>/dogbreeds/score
 ```
 
 Clean-up:
