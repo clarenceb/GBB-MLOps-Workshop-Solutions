@@ -41,9 +41,11 @@ deployment.extensions/azureml-fe   1         1         1            1           
 ```
 
 **Service**:
+
 - Load balancer endpoint with public IP
 
 **Deployment**:
+
 - You get a billing agent (*not sure what this is for exactly*)
 - Front end reverse proxy
 
@@ -82,7 +84,11 @@ Result:
 {"label": "Italian_greyhound", "probability": "0.9723086"}
 ```
 
-### Deploying directly to AKS
+### Create an Ingress Controller
+
+See how to [install the NGINX ingress controller](https://docs.microsoft.com/en-us/azure/aks/ingress-basic#create-an-ingress-controller) in your cluster.
+
+### Deploy the ML model container directly to AKS
 
 Get the Ingress external IP:
 
@@ -101,7 +107,7 @@ curl https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2017/11/
 (echo -n '{"data": "'; base64 /tmp/dog.jpg; echo '"}') | curl -sX POST -H "Content-Type: application/json" -d @-  http://<ingress_external_ip>/dogbreeds/score
 ```
 
-Clean-up:
+### Clean-up Kubernetes objects
 
 ```sh
 kubectl delete ns dogbreeds-test
@@ -148,7 +154,7 @@ Result:
 * If you [configure a DNS name](https://docs.microsoft.com/en-us/azure/aks/ingress-tls#configure-a-dns-name) for the Ingress external IP then you should update the `ingress.hosts` field in the file `charts/dogbreeds-ml/templates/ingress.yaml` with this FQDN.  You can then omit the header `Host: dogbreeds-ml.local` in your HTTP requests.
 * You can also [setup TLS](https://docs.microsoft.com/en-us/azure/aks/ingress-tls#install-cert-manager) on the Ingress using Let's Encrypt and the Cert-Manager Helm chart.  Make sure you updatr the `ingress.tls` field in the file `charts/dogbreeds-ml/templates/ingress.yaml`.
 
-Clean-up:
+### Clean-up Helm installation
 
 ```sh
 helm delete --purge dogbreeds-demo
